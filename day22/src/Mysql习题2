@@ -1,0 +1,394 @@
+1.查询姓“李”的老师的个数
+select count(*) from teacher where tname like '李%';
++----------+
+| count(*) |
++----------+
+|        1 |
++----------+
+2.查询男女生人数个数
+select count(*),sex from student group by sex;
++----------+------+
+| count(*) | sex  |
++----------+------+
+|        3 | 女   |
+|        4 | 男   |
++----------+------+
+3.查询同名同姓学生名单，并统计同名人数
+select count(*),sname from student group by sname having count(*)>=2;
++----------+-------+
+| count(*) | sname |
++----------+-------+
+|        2 | 张三  |
++----------+-------+
+4.1981年出生的学生名单
+select * from student where year(birthday) =1981;
++------+-------+------------+------+
+| sid  | sname | birthday   | sex  |
++------+-------+------------+------+
+| 1002 | 李四  | 1981-10-10 | 男   |
+| 1003 | 王五  | 1981-11-10 | 女   |
++------+-------+------------+------+
+5.查询平均成绩大于60分的同学的学号和平均成绩
+select sid,avg(score) from sc group by sid having avg(score)>60;
++------+------------+
+| sid  | avg(score) |
++------+------------+
+| 1001 |    78.5714 |
+| 1002 |    78.7500 |
+| 1003 |    64.5000 |
+| 1004 |    75.0000 |
+| 1007 |    82.0000 |
++------+------------+
+6.求选了课程的学生人数
+ select count(*),cid from sc group by cid;
++----------+-----+
+| count(*) | cid |
++----------+-----+
+|        7 |   1 |
+|        4 |   2 |
+|        2 |   3 |
+|        4 |   4 |
+|        1 |   5 |
+|        3 |   6 |
+|        3 |   7 |
++----------+-----+
+7.查询至少选修两门课程的学生学号
+select sid from sc group by sid having count(sid)>=2;
++------+
+| sid  |
++------+
+| 1001 |
+| 1002 |
+| 1003 |
+| 1004 |
+| 1005 |
+| 1007 |
++------+
+8.查询各科成绩最高和最低的分。以如下形式显示：课程ID，最高分，最低分
+ select cid,max(score),min(score) from sc group by cid;
++-----+------------+------------+
+| cid | max(score) | min(score) |
++-----+------------+------------+
+|   1 |        100 |         50 |
+|   2 |         70 |         50 |
+|   3 |        100 |         80 |
+|   4 |         90 |         30 |
+|   5 |         80 |         80 |
+|   6 |         90 |         80 |
+|   7 |        100 |         80 |
++-----+------------+------------+
+9.统计每门课程的学生选修人数。要求输出课程号和选修人数，查询结果按人数降序排列，若人数相同，按课程号升序排列
+ select cid,count(*) from sc group by cid order by count(*) desc,cid;
++-----+----------+
+| cid | count(*) |
++-----+----------+
+|   1 |        7 |
+|   2 |        4 |
+|   4 |        4 |
+|   6 |        3 |
+|   7 |        3 |
+|   3 |        2 |
+|   5 |        1 |
++-----+----------+
+
+以下练习针对部门员工表，请导入scott.sql的数据
+
+1.打印入职时间超过38年的员工信息
+ select * from emp where  hiredate <= date_sub(now(), interval 38 year );
++-------+-------+-------+------+------------+--------+------+--------+
+| empno | ename | job   | mgr  | hiredate   | sal    | comm | deptno |
++-------+-------+-------+------+------------+--------+------+--------+
+|  7369 | SMITH | CLERK | 7902 | 1980-12-17 | 800.00 | NULL |     20 |
++-------+-------+-------+------+------------+--------+------+--------+
+2.把hiredate列看做是员工的生日,求本月过生日的员工
+select * from emp where month(hiredate)=month(now());
++-------+-------+---------+------+------------+---------+------+--------+
+| empno | ename | job     | mgr  | hiredate   | sal     | comm | deptno |
++-------+-------+---------+------+------------+---------+------+--------+
+|  7369 | SMITH | CLERK   | 7902 | 1980-12-17 |  800.00 | NULL |     20 |
+|  7900 | JAMES | CLERK   | 7698 | 1981-12-03 |  950.00 | NULL |     30 |
+|  7902 | FORD  | ANALYST | 7566 | 1981-12-03 | 3000.00 | NULL |     20 |
++-------+-------+---------+------+------------+---------+------+--------+
+3.把hiredate列看做是员工的生日,求下月过生日的员工
+select * from emp where month(hiredate)=month(now())+1;
+4.求1980年下半年入职的员工
+select * from emp where year(hiredate)=1980 and month(hiredate)>6;
++-------+-------+-------+------+------------+--------+------+--------+
+| empno | ename | job   | mgr  | hiredate   | sal    | comm | deptno |
++-------+-------+-------+------+------------+--------+------+--------+
+|  7369 | SMITH | CLERK | 7902 | 1980-12-17 | 800.00 | NULL |     20 |
++-------+-------+-------+------+------------+--------+------+--------+
+5.请用两种的方式查询所有名字长度为4的员工的员工编号,姓名
+select empno,ename from emp where length(ename)=4;//仅适用于英文字符的长度判断
+select empno,ename from emp where char_length(ename)=4;
++-------+-------+
+| empno | ename |
++-------+-------+
+|  7521 | WARD  |
+|  7839 | KING  |
+|  7902 | FORD  |
++-------+-------+
+6.显示各种职位的最低工资
+ select job,min(sal) from emp group by job;
++-----------+----------+
+| job       | min(sal) |
++-----------+----------+
+| ANALYST   |  3000.00 |
+| CLERK     |   800.00 |
+| MANAGER   |  2450.00 |
+| PRESIDENT |  5000.00 |
+| SALESMAN  |  1250.00 |
++-----------+----------+
+7.求1980年各个月入职的的员工个数
+ select month(hiredate),count(*) from emp where year(hiredate)=1980 group by  month(hiredate);
++-----------------+----------+
+| month(hiredate) | count(*) |
++-----------------+----------+
+|              12 |        1 |
++-----------------+----------+
+8.查询每个部门的最高工资
+ select deptno,max(sal) from emp group by deptno;
++--------+----------+
+| deptno | max(sal) |
++--------+----------+
+|     10 |  5000.00 |
+|     20 |  3000.00 |
+|     30 |  2850.00 |
+|     50 |  1300.00 |
++--------+----------+
+9.查询每个部门,每种职位的最高工资
+select deptno, job,max(sal) from emp group by deptno, job;
++--------+-----------+----------+
+| deptno | job       | max(sal) |
++--------+-----------+----------+
+|     10 | CLERK     |  1300.00 |
+|     10 | MANAGER   |  2450.00 |
+|     10 | PRESIDENT |  5000.00 |
+|     20 | ANALYST   |  3000.00 |
+|     20 | CLERK     |  1100.00 |
+|     20 | MANAGER   |  2975.00 |
+|     30 | CLERK     |   950.00 |
+|     30 | MANAGER   |  2850.00 |
+|     30 | SALESMAN  |  1600.00 |
+|     50 | CLERK     |  1300.00 |
++--------+-----------+----------+
+10.查询各部门的总工资和平均工资
+ select deptno,sum(sal),avg(sal) from emp group by deptno;
++--------+----------+-------------+
+| deptno | sum(sal) | avg(sal)    |
++--------+----------+-------------+
+|     10 |  8750.00 | 2916.666667 |
+|     20 | 10875.00 | 2175.000000 |
+|     30 |  9400.00 | 1566.666667 |
+|     50 |  1300.00 | 1300.000000 |
++--------+----------+-------------+
+11.查询10号部门,20号部门的平均工资（尝试用多种写法）
+ select deptno,avg(sal) from emp group by deptno having deptno in(10,20);
+ select deptno,avg(sal) from emp group by deptno having deptno=10 or  deptno=20;
++--------+-------------+
+| deptno | avg(sal)    |
++--------+-------------+
+|     10 | 2916.666667 |
+|     20 | 2175.000000 |
++--------+-------------+
+12.查询平均工资高于2000元的部门编号和平均工资
+select deptno,avg(sal) from emp group by deptno having avg(sal)>2000;
++--------+-------------+
+| deptno | avg(sal)    |
++--------+-------------+
+|     10 | 2916.666667 |
+|     20 | 2175.000000 |
++--------+-------------+
+13.统计公司里经理的人数
+select count(*) from emp where job="MANAGER";
++----------+
+| count(*) |
++----------+
+|        3 |
++----------+
+14.查询工资最高的3名员工信息
+ select * from emp order by sal desc limit 3;
++-------+-------+-----------+------+------------+---------+------+--------+
+| empno | ename | job       | mgr  | hiredate   | sal     | comm | deptno |
++-------+-------+-----------+------+------------+---------+------+--------+
+|  7839 | KING  | PRESIDENT | NULL | 1981-11-17 | 5000.00 | NULL |     10 |
+|  7902 | FORD  | ANALYST   | 7566 | 1981-12-03 | 3000.00 | NULL |     20 |
+|  7788 | SCOTT | ANALYST   | 7566 | 1987-07-13 | 3000.00 | NULL |     20 |
++-------+-------+-----------+------+------------+---------+------+--------+
+15.查询工资由高到低第6到第10的员工信息
+select * from emp order by sal desc limit 5,5;
++-------+----------+----------+------+------------+---------+--------+--------+
+| empno | ename    | job      | mgr  | hiredate   | sal     | comm   | deptno |
++-------+----------+----------+------+------------+---------+--------+--------+
+|  7782 | CLARK    | MANAGER  | 7839 | 1981-06-09 | 2450.00 |   NULL |     10 |
+|  7499 | ALLEN    | SALESMAN | 7698 | 1981-02-20 | 1600.00 | 300.00 |     30 |
+|  7844 | TURNER   | SALESMAN | 7698 | 1981-09-08 | 1500.00 |   0.00 |     30 |
+|  8000 | zhangsan | CLERK    | 7782 | 1982-01-23 | 1300.00 |   NULL |     50 |
+|  7934 | MILLER   | CLERK    | 7782 | 1982-01-23 | 1300.00 |   NULL |     10 |
++-------+----------+----------+------+------------+---------+--------+--------+
+
+表连接查询练习
+1.查询李四学习的课程，考试分数，课程的授课老师
+ select course.cname,score,teacher.tname from sc,course,teacher where sid=1002 and sc.cid=course.cid and course.tid=teacher.tid;
++----------+-------+--------+
+| cname    | score | tname  |
++----------+-------+--------+
+| 企业管理 |    90 | 叶平   |
+| 数据库   |    55 | 李老师 |
+| 语文     |    90 | 叶平   |
+| 数学     |    80 | 王老师 |
++----------+-------+--------+
+2.查询王五有哪些课程没选，显示这些课程名称
+select cname from course where cid not in (select cid from student a inner join sc b on a.sid=b.sid where sname='王五');
++--------+
+| cname  |
++--------+
+| UML    |
+| 数据库 |
+| 英语   |
+| 语文   |
+| 数学   |
++--------+
+3.查询所有同学的学号、姓名、选课数、总成绩
+select student.sid,sname,count(*),sum(score) from student,sc where student.sid=sc.sid group by sid;
++------+-------+----------+------------+
+| sid  | sname | count(*) | sum(score) |
++------+-------+----------+------------+
+| 1001 | 张三  |        7 |        550 |
+| 1002 | 李四  |        4 |        315 |
+| 1003 | 王五  |        2 |        129 |
+| 1004 | 赵六  |        2 |        150 |
+| 1005 | 孙七  |        4 |        230 |
+| 1006 | 周八  |        1 |         60 |
+| 1007 | 张三  |        4 |        328 |
++------+-------+----------+------------+
+4.查询所有课程成绩都小于等于60分的同学的学号、姓名；
+ select b.sid,sname from student a inner join sc b on a.sid=b.sid group by sid having(avg(score)<=60);
++------+-------+
+| sid  | sname |
++------+-------+
+| 1005 | 孙七  |
+| 1006 | 周八  |
++------+-------+
+5.查询没有学全所有课的同学的学号、姓名；
+ select a.sid,a.sname from student a inner join sc b on a.sid=b.sid group by b.sid having count(*)<7;
++------+-------+
+| sid  | sname |
++------+-------+
+| 1002 | 李四  |
+| 1003 | 王五  |
+| 1004 | 赵六  |
+| 1005 | 孙七  |
+| 1006 | 周八  |
+| 1007 | 张三  |
++------+-------+
+6.查询每门课程选修人数，格式为课程名称，人数；
+ select cname,count(*) from course,sc where course.cid=sc.cid group by cname;
++----------+----------+
+| cname    | count(*) |
++----------+----------+
+| UML      |        2 |
+| 企业管理 |        7 |
+| 数学     |        3 |
+| 数据库   |        4 |
+| 英语     |        1 |
+| 语文     |        3 |
+| 马克思   |        4 |
++----------+----------+
+7.查询出只选修了一门课程的全部学生的学号和姓名 ；
+select student.sid,sname from student,sc where student.sid=sc.sid group by sid having count(cid)=1;
++------+-------+
+| sid  | sname |
++------+-------+
+| 1006 | 周八  |
++------+-------+
+8.查询每门课程的平均成绩，结果按平均成绩升序排列，平均成绩相同时，按课程号降序排列
+select sc.cid,avg(score) from sc group by cid order by avg(score) asc,cid desc;
++-----+------------+
+| cid | avg(score) |
++-----+------------+
+|   4 |    58.2500 |
+|   2 |    65.0000 |
+|   1 |    69.8571 |
+|   5 |    80.0000 |
+|   7 |    86.6667 |
+|   6 |    86.6667 |
+|   3 |    90.0000 |
++-----+------------+
+9.查询学生平均成绩大于80的所有学生的学号、姓名和平均成绩
+ select student.sid,sname,avg(score) from student,sc where student.sid=sc.sid group by sid having avg(score)>80;
++------+-------+------------+
+| sid  | sname | avg(score) |
++------+-------+------------+
+| 1007 | 张三  |    82.0000 |
++------+-------+------------+
+10.查询课程相同且成绩相同的的学生的学号、课程号、学生成绩
+ select sid,a.cid,a.score from sc a inner join ( select cid,score from sc group by cid,score having(count(*)>=2))b on a.cid=b.cid and a.score = b.score;
++------+-----+-------+
+| sid  | cid | score |
++------+-----+-------+
+| 1001 |   1 |    50 |
+| 1001 |   2 |    70 |
+| 1002 |   6 |    90 |
+| 1002 |   7 |    80 |
+| 1003 |   2 |    70 |
+| 1004 |   2 |    70 |
+| 1005 |   1 |    50 |
+| 1007 |   6 |    90 |
+| 1007 |   7 |    80 |
++------+-----+-------+
+11.查询全部学生都选修的课程的课程号和课程名
+ select a.sid,b.cid,b.cname from sc a inner join course b on a.cid=b.cid inner join student c on c.sid=a.sid group by sid,cid;
++------+-----+----------+
+| sid  | cid | cname    |
++------+-----+----------+
+| 1001 |   1 | 企业管理 |
+| 1001 |   2 | 马克思   |
+| 1001 |   3 | UML      |
+| 1001 |   4 | 数据库   |
+| 1001 |   5 | 英语     |
+| 1001 |   6 | 语文     |
+| 1001 |   7 | 数学     |
+| 1002 |   1 | 企业管理 |
+| 1002 |   4 | 数据库   |
+| 1002 |   6 | 语文     |
+| 1002 |   7 | 数学     |
+| 1003 |   1 | 企业管理 |
+| 1003 |   2 | 马克思   |
+| 1004 |   1 | 企业管理 |
+| 1004 |   2 | 马克思   |
+| 1005 |   1 | 企业管理 |
+| 1005 |   2 | 马克思   |
+| 1005 |   3 | UML      |
+| 1005 |   4 | 数据库   |
+| 1006 |   1 | 企业管理 |
+| 1007 |   1 | 企业管理 |
+| 1007 |   4 | 数据库   |
+| 1007 |   6 | 语文     |
+| 1007 |   7 | 数学     |
++------+-----+----------+
+12.查询两门以上不及格课程的同学的学号及其平均成绩
+select sid,avg(score) from sc where sid in (select sid from sc where score<60 group by sid having count(*)>=2) group by sid;
++------+------------+
+| sid  | avg(score) |
++------+------------+
+| 1005 |    57.5000 |
++------+------------+
+
+子查询练习
+1.查询所有课程成绩都小于等于60分的同学的学号、姓名
+select a.sid,sname from student a inner join (select sid from sc group by sid having max(score)<60)b on a.sid=b.sid;
+2.查询没有学全所有课的同学的学号、姓名
+select a.sid,a.sname from student a inner join sc b on a.sid=b.sid group by b.sid having count(*)<7;
+3.查询每门课程选修人数，格式为课程名称，人数
+ select cname 课程名称,count(*) 人数 from sc inner join course on sc.cid=course.cid group by sc.cid;
+4.查询全部学生都选修的课程的课程号和课程名
+select c.cid,c.cname from course c inner join (select sid,b.cid from sc a inner join course b on a.cid=b.cid)b on c.cid=b.cid group by b.cid having count(*)=7;
+5.查询两门以上不及格课程的同学的学号及其平均成绩
+select sid,avg(score) from sc where sid in (select sid from sc where score<60 group by sid having count(*)>=2) group by sid;
+6.查询2号课程成绩比1号课程成绩低的学生的学号、姓名
+ select a.sid,c.sname from ( select * from sc where cid=2)a inner join (select * from sc where cid=1)b on a.sid=b.sid inner join student c on a.sid=c.sid where a.sid=b.sid and a.score<b.score;
+7.查询学过1号课程并且也学过编号2号课程的同学的学号、姓名
+select a.sid,c.sname from ( select * from sc where cid=2)a inner join (select * from sc where cid=1)b on a.sid=b.sid inner join student c on a.sid=c.sid where a.sid=b.sid;
+8.查询没学过“叶平”老师课的同学的学号、姓名
+select sid,sname from student where sid not in (select sid from teacher a inner join course b on a.tid=b.tid inner join sc c on b.cid=c.cid where a.tname='叶平');
