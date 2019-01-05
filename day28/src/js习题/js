@@ -1,0 +1,158 @@
+1. 查找数组元素位置
+题目描述：
+找出元素 item 在给定数组 arr 中的位置
+
+        function indexOf(arr,item){
+            for(var i=0;i<arr.length;i++){
+                if(arr[i]==item){
+                    return i;
+                }
+            }
+            return -1;
+        }
+        console.log(indexOf([1,2,3,4],3));
+
+2. 数组求和
+  题目描述：
+  计算给定数组 arr 中所有元素的总和
+
+        function sum(arr){
+            var sum=0;
+            for(var i=0;i<arr.length;i++){
+                sum+=arr[i];
+            }
+            return sum;
+        }
+        console.log(sum([1,2,3,4]));
+
+3. 移除数组元素
+  题目描述：
+  移除数组 arr 中的所有值与 item 相等的元素。不要直接修改数组 arr，结果返回新的数组
+
+        function remove(arr,item){
+            for(var i=0;i<arr.length;i++){
+                if(arr[i]==item){
+                    arr.splice(i,1)
+                }
+            }
+            return arr;
+        }
+        console.log(remove([1,2,3,4,2],2));
+
+4. 移除数组元素
+  题目描述：
+  移除数组 arr 中的所有值与 item 相等的元素，直接在给定的 arr 数组上进行操作，返回原有数组
+
+        function removeWithoutCopy(arr,item){
+            var newarr=[];
+            for(var i=0;i<arr.length;i++){
+                if(arr[i]!=item){
+                    newarr.push(arr[i]);
+                }
+            }
+            return newarr;
+        }
+        console.log(removeWithoutCopy([1,2,2,3,4,2,2],2))
+5.末尾追加元素
+  题目描述：
+  在数组 arr 末尾添加元素 item，返回数组
+
+        function append(arr,item){
+            arr.push(item);
+            return arr;
+        }
+        console.log(append([1,2,3,4],10));
+
+6.末尾删除元素
+  题目描述：
+  删除数组 arr 最后一个元素，返回数组
+
+        function truncate(arr){
+            arr.pop();
+            return arr;
+        }
+        console.log(truncate([1,2,3,4]));
+
+7. 开头添加元素
+  题目描述：
+  在数组 arr 开头添加元素 item，返回数组
+
+        function  prepend(arr, item){
+            var newarr=[];
+            newarr[0]=item;
+            for(var i=0;i<arr.length;i++){
+               newarr.push(arr[i]);
+            }
+            return newarr;
+        }
+        console.log(prepend([1,2,3,4],10));
+
+8. 开头删除元素
+  题目描述：
+  删除数组 arr 第一个元素，返回数组
+
+         function curtail(arr){
+             arr.splice(0,1);
+             return arr;
+         }
+         console.log(curtail([1,2,3,4]));
+
+9. 合并数组
+  题目描述：
+  合并数组 arr1 和数组 arr2，返回合并后的数组
+
+        function concat(arr1,arr2){
+            return arr1.concat(arr2);
+        }
+        console.log(concat([1,2,3,4],['a','b','c',1]));
+
+10. 插入元素
+   题目描述：
+   在数组 arr 的 index 处添加元素 item，返回数组
+
+
+
+11. 计数
+   题目描述：
+   统计数组 arr 中值等于 item 的元素出现的次数，返回次数
+
+        function count(arr,item){
+            var count=0;
+            for(var i=0;i<arr.length;i++){
+                if(arr[i]==item){
+                    count++;
+                }
+            }
+            return count;
+        }
+        console.log(count([1,2,4,4,3,4,3],4));
+12. 查找重复元素
+   题目描述：
+   找出数组 arr 中重复出现过的元素，返回重复元素的数组
+
+13.求平方
+   题目描述：
+   为数组 arr 中的每个元素求二次方，返回数组
+
+        function square(arr){
+            for(var i=0;i<arr.length;i++){
+               arr[i]=arr[i]*arr[i];
+            }
+            return arr;
+        }
+        console.log(square([1,2,3,4]));
+
+14. 查找数组元素位置
+   题目描述：
+   在数组 arr 中，查找值与 target 相等的元素出现的所有位置，返回一个下标数组
+
+        function findAllOccurrences(arr,target){
+            var indexarr=[];
+            for(var i=0;i<arr.length;i++){
+               if(arr[i]==target){
+                   indexarr.push(i);
+               }
+            }
+            return indexarr;
+        }
+        console.log(findAllOccurrences([1,2,3,4,5,6,1,7],1));
